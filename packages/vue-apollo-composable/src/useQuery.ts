@@ -47,6 +47,7 @@ export interface UseQueryOptions<
   debounce?: number
   prefetch?: boolean
   keepPreviousResult?: boolean
+  continueOnUnmount?: boolean | Ref<boolean>
 }
 
 interface SubscribeToMoreItem {
@@ -616,6 +617,10 @@ export function useQueryImpl<
 
   // Teardown
   vm && onBeforeUnmount(() => {
+    if (currentOptions.value?.continueOnUnmount) {
+      return
+    }
+
     stop()
     subscribeToMoreItems.length = 0
   })
